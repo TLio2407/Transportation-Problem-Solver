@@ -24,5 +24,5 @@ penalty_matrix, max_pos_val, max_pos_cell = opt.generate_penalty_matrix(cost_mat
 for i in penalty_matrix:
     print(i)
 print(f"Maximum positive value is {max_pos_val} at cell {max_pos_cell}")
-    
+
 

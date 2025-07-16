@@ -14,10 +14,10 @@ def is_Degeneracy(cost_matrix, allocated_cells):
 def calculate_u_and_v(cost_matrix, allocated_cells):
     n = len(cost_matrix)
     u = [0]
-    v = [cost_matrix[0][0]]
+    v = []
 
     # Calculate u and v values
-    for cell in allocated_cells[1:]:
+    for cell in allocated_cells:
         print("Processing cell:", cell)
         i, j = cell
         if i == len(u):
