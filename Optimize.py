@@ -1,3 +1,4 @@
+from PathFinder import find_path
 def get_allocated_cells(matrix):
     allocated_cells = []
     for i in range(len(matrix)):
@@ -13,17 +14,36 @@ def is_Degeneracy(cost_matrix, allocated_cells):
 #Calculate and return U and V as lists
 def calculate_u_and_v(cost_matrix, allocated_cells):
     n = len(cost_matrix)
-    u = [0]
-    v = []
-
+    u = [None] * (len(cost_matrix) - 1)
+    v = [None] * len(cost_matrix[0])
+    u.insert(0, 0)
     # Calculate u and v values
     for cell in allocated_cells:
-        print("Processing cell:", cell)
         i, j = cell
-        if i == len(u):
-            u.append(cost_matrix[i][j] - v[j])
-        if j == len(v):
-            v.append(cost_matrix[i][j] - u[i])
+        if i == 0:
+            v.pop(j)
+            v.insert(j, cost_matrix[i][j])
+        else:
+            if v[j] != None:
+                u.pop(i)
+                u.insert(i,cost_matrix[i][j] - v[j])
+    while None in v or None in u:
+        for cell in allocated_cells:
+            i, j = cell
+            if u[i] != None and v[j] == None:
+                v.pop(j)
+                v.insert(j, cost_matrix[i][j] - u[i])
+            elif u[i] == None and v[j] != None:
+                u.pop(i)
+                u.insert(i, cost_matrix[i][j] - v[j])
+            
+
+    print("U = ")
+    for i in u:
+        print(i)
+    print("V = ", v)
+
+    
     return u, v
 
 def generate_penalty_matrix(cost_matrix, allocated_cells, u, v):
@@ -39,3 +59,64 @@ def generate_penalty_matrix(cost_matrix, allocated_cells, u, v):
                 max_pos_cell = [i,j]
     return penalty_matrix, maximum_positive, max_pos_cell
 
+def matrix_transform(supply_demand_matrix = [],path = []):
+    plus_cells = path[::2]
+    minus_cells = path[1::2]
+    min_minus_cells_value = supply_demand_matrix[minus_cells[0][0]][minus_cells[0][1]]
+    for cell in minus_cells[1:]:
+        min_minus_cells_value = min(min_minus_cells_value,
+                                    supply_demand_matrix[cell[0]][cell[1]])
+    for cell in plus_cells:
+        supply_demand_matrix[cell[0]][cell[1]] += min_minus_cells_value
+    for cell in minus_cells:
+        supply_demand_matrix[cell[0]][cell[1]] -= min_minus_cells_value
+    
+
+def find_vertical_and_horizontal_match_cell(target_cell = [], allocated_cells = []): 
+    vertical = []
+    horizontal = []
+    for cell in allocated_cells:
+        if cell != target_cell:
+            if cell[0] == target_cell[0]:
+                vertical.append(cell)
+            elif cell[1] == target_cell[1]:
+                horizontal.append(cell)
+    return vertical, horizontal
+
+if __name__ == "__main__":
+    sup_dem_matrix = [[200, 50, 0, 0],
+                      [0, 250, 100, 0],
+                      [0, 0, 250, 150]]
+    cost_matrix = [[3, 1, 7, 4],
+                [2, 6, 5, 9],
+                [8, 3, 3, 2]]
+    allocated_cells = get_allocated_cells(sup_dem_matrix)
+    u,v = calculate_u_and_v(cost_matrix,allocated_cells)
+    penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
+    for _ in penalty_matrix:
+        print(_)
+    print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
+    while maximum_positive > 0:            
+        v,h = find_vertical_and_horizontal_match_cell(max_pos_cell,allocated_cells)
+        path = []
+        min_path_len = len(allocated_cells)
+        for start in v:
+            for end in h:
+                p = find_path(allocated_cells, start, end)
+                if len(p) < min_path_len:
+                    path = p
+                    min_path_len = len(p)
+        path.insert(0,max_pos_cell)        
+        print(path)
+        matrix_transform(sup_dem_matrix, path)
+        for _ in sup_dem_matrix:
+            print(_)
+        allocated_cells = get_allocated_cells(sup_dem_matrix)
+        u,v = calculate_u_and_v(cost_matrix,allocated_cells)
+        penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
+        for _ in penalty_matrix:
+            print(_)
+        print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
+    print("RESULT MATRIX")
+    for _ in sup_dem_matrix:
+        print(_)
