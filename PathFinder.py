@@ -42,7 +42,7 @@ def find_path(allocated_cells, start, end):
         if result:
             return clean_path(result)
     
-    return None
+    return []
 
 def get_max_move_in_direction(valid_cells, start_pos, dx, dy):
     """Get all positions reachable in one direction from start_pos"""
