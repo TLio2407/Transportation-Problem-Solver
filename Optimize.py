@@ -46,6 +46,14 @@ def calculate_u_and_v(cost_matrix, allocated_cells):
     
     return u, v
 
+def calculate_final_cost(sup_dem_matrix = [], cost_matrix = []):
+    cost = 0
+    allocated_cells = get_allocated_cells(sup_dem_matrix)
+    for cell in allocated_cells:
+        i, j = cell
+        cost += sup_dem_matrix[i][j] * cost_matrix[i][j]
+    return cost
+
 def generate_penalty_matrix(cost_matrix, allocated_cells, u, v):
     maximum_positive = 0
     max_pos_cell = []
@@ -120,3 +128,4 @@ if __name__ == "__main__":
     print("RESULT MATRIX")
     for _ in sup_dem_matrix:
         print(_)
+    print(f"FINAL COST: {calculate_final_cost(sup_dem_matrix,cost_matrix)}")
