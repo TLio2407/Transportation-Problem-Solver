@@ -1,4 +1,5 @@
 from PathFinder import find_path
+import copy
 def get_allocated_cells(matrix):
     allocated_cells = []
     for i in range(len(matrix)):
@@ -78,7 +79,24 @@ def matrix_transform(supply_demand_matrix = [],path = []):
         supply_demand_matrix[cell[0]][cell[1]] += min_minus_cells_value
     for cell in minus_cells:
         supply_demand_matrix[cell[0]][cell[1]] -= min_minus_cells_value
-    
+
+def matrix_transform_copy(supply_demand_matrix=[], path=[]):
+    # Deep copy to avoid modifying the original
+    new_matrix = copy.deepcopy(supply_demand_matrix)
+
+    plus_cells = path[::2]
+    minus_cells = path[1::2]
+
+    min_minus_cells_value = new_matrix[minus_cells[0][0]][minus_cells[0][1]]
+    for cell in minus_cells[1:]:
+        min_minus_cells_value = min(min_minus_cells_value, new_matrix[cell[0]][cell[1]])
+
+    for cell in plus_cells:
+        new_matrix[cell[0]][cell[1]] += min_minus_cells_value
+    for cell in minus_cells:
+        new_matrix[cell[0]][cell[1]] -= min_minus_cells_value
+
+    return new_matrix
 
 def find_vertical_and_horizontal_match_cell(target_cell = [], allocated_cells = []): 
     vertical = []
@@ -106,8 +124,8 @@ if __name__ == "__main__":
     for _ in penalty_matrix:
         print(_)
     print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
-    while maximum_positive > 0:
-        done = False            
+    done = False            
+    while maximum_positive > 0 or done:
         ver,hor = find_vertical_and_horizontal_match_cell(max_pos_cell,allocated_cells)
         path = []
         min_path_len = len(allocated_cells)
@@ -132,10 +150,21 @@ if __name__ == "__main__":
             sorted_dict = dict(sorted(list_unallocated_cells_ascending.items()))
             recent_cost = calculate_final_cost(sup_dem_matrix, cost_matrix)
             for key in sorted_dict.keys():
-                ver, hor = find_vertical_and_horizontal_match_cell(sorted_dict[key],allocated_cells)
-                if ver and hor:
-                    print(f"Cell {sorted_dict[key]}, value = {key}")
-                    break
+                ver, hor = find_vertical_and_horizontal_match_cell(sorted_dict[key], allocated_cells)
+                for v_i in ver:
+                    for h_i in hor:
+                        new_path = find_path(allocated_cells, v_i, h_i)
+                        if new_path:
+                            new_path.insert(0, sorted_dict[key])
+                            print(new_path)
+                            new_matrix = matrix_transform_copy(sup_dem_matrix,new_path)
+                            new_cost = calculate_final_cost(new_matrix, cost_matrix)
+                            if new_cost < recent_cost:
+                                sup_dem_matrix = copy.deepcopy(new_matrix) 
+                                print(new_cost)
+            done = True 
+        if done:
+            break                
         u,v = calculate_u_and_v(cost_matrix,allocated_cells)
         penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
         for _ in penalty_matrix:
