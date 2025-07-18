@@ -109,15 +109,7 @@ def find_vertical_and_horizontal_match_cell(target_cell = [], allocated_cells = 
                 horizontal.append(cell)
     return vertical, horizontal
 
-if __name__ == "__main__":
-    sup_dem_matrix = [[20, 15, 0, 0, 0],
-                      [0, 5, 35, 0, 0],
-                      [0, 0, 5, 10, 5],
-                      [0, 0, 0, 0, 30]]
-    cost_matrix = [[10, 2, 3, 15, 9],
-                    [5, 10, 15, 2, 4],
-                    [15, 5, 14, 7, 15],
-                    [20, 15, 13, 25, 8]]
+def optimize(sup_dem_matrix = [], cost_matrix = []):
     allocated_cells = get_allocated_cells(sup_dem_matrix)
     u,v = calculate_u_and_v(cost_matrix,allocated_cells)
     penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
