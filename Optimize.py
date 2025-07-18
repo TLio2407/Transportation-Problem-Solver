@@ -131,7 +131,11 @@ if __name__ == "__main__":
                         list_unallocated_cells_ascending.update({cost_matrix[i][j]:[i,j]})
             sorted_dict = dict(sorted(list_unallocated_cells_ascending.items()))
             recent_cost = calculate_final_cost(sup_dem_matrix, cost_matrix)
-            
+            for key in sorted_dict.keys():
+                ver, hor = find_vertical_and_horizontal_match_cell(sorted_dict[key],allocated_cells)
+                if ver and hor:
+                    print(f"Cell {sorted_dict[key]}, value = {key}")
+                    break
         u,v = calculate_u_and_v(cost_matrix,allocated_cells)
         penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
         for _ in penalty_matrix:
