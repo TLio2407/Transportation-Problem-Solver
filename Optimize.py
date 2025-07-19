@@ -58,14 +58,15 @@ def calculate_final_cost(sup_dem_matrix = [], cost_matrix = []):
 def generate_penalty_matrix(cost_matrix, allocated_cells, u, v):
     maximum_positive = 0
     max_pos_cell = []
-    penalty_matrix = [[0 for _ in range(len(cost_matrix[0]))] for _ in range(len(cost_matrix))]
+    penalty_matrix = [["-" for _ in range(len(cost_matrix[0]))] for _ in range(len(cost_matrix))]
     u, v = calculate_u_and_v(cost_matrix, allocated_cells)
     for i in range(len(penalty_matrix)):
         for j in range(len(penalty_matrix[i])):
-            penalty_matrix[i][j] = u[i] + v[j] - cost_matrix[i][j]
-            if penalty_matrix[i][j] > maximum_positive:
-                maximum_positive = max(maximum_positive, penalty_matrix[i][j])
-                max_pos_cell = [i,j]
+            if [i,j] not in allocated_cells:
+                penalty_matrix[i][j] = u[i] + v[j] - cost_matrix[i][j]
+                if penalty_matrix[i][j] > maximum_positive:
+                    maximum_positive = max(maximum_positive, penalty_matrix[i][j])
+                    max_pos_cell = [i,j]
     return penalty_matrix, maximum_positive, max_pos_cell
 
 def matrix_transform(supply_demand_matrix = [],path = []):
@@ -119,24 +120,31 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
                 if [i, j] not in allocated_cells:
                     list_unallocated_cells_ascending.update({f"{i} {j}" : cost_matrix[i][j]})
         sorted_dict = dict(sorted(list_unallocated_cells_ascending.items(), key=lambda item: item[1]))
-        recent_cost = calculate_final_cost(sup_dem_matrix, cost_matrix)
-        print(f"Recent Cost:{recent_cost}")
-        for key in sorted_dict.keys():
-            current_cell = [int(key.split()[0]), int(key.split()[1])]
-            ver, hor = find_vertical_and_horizontal_match_cell(current_cell, allocated_cells)
-            for v_i in ver:
-                for h_i in hor:
-                    new_path = find_path(allocated_cells, v_i, h_i)
-                    if new_path:
-                        new_path.insert(0, current_cell)
-                        print(new_path)
-                        new_matrix = matrix_transform_copy(sup_dem_matrix,new_path)
-                        new_cost = calculate_final_cost(new_matrix, cost_matrix)
-                        if new_cost < recent_cost:
-                            sup_dem_matrix = copy.deepcopy(new_matrix) 
-                            print(new_cost)
-                            recent_cost = new_cost
-        return sup_dem_matrix
+        first_key = next(iter(sorted_dict))
+        new_cell = [int(first_key.split()[0]), int(first_key.split()[1])]
+        allocated_cells.insert(0, new_cell)
+        u,v = calculate_u_and_v(cost_matrix,allocated_cells)
+        penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
+        print(allocated_cells)
+        for _ in penalty_matrix:
+            print(_)
+        print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
+        ver,hor = find_vertical_and_horizontal_match_cell(max_pos_cell,allocated_cells)
+        path = []
+        min_path_len = len(allocated_cells)
+        for start in ver:
+            for end in hor:
+                p = find_path(allocated_cells, start, end)
+                if len(p) < min_path_len:
+                    path = p
+                    min_path_len = len(p)
+        path.insert(0,max_pos_cell)        
+        print(path)
+        matrix_transform(sup_dem_matrix, path)
+        for _ in sup_dem_matrix:
+            print(_)
+        print(calculate_final_cost(sup_dem_matrix,cost_matrix))
+        return
     u,v = calculate_u_and_v(cost_matrix,allocated_cells)
     penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
     for _ in penalty_matrix:
@@ -160,29 +168,38 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
             print(_)
         allocated_cells = get_allocated_cells(sup_dem_matrix)
         if is_Degeneracy(cost_matrix, allocated_cells):
+            new_matrix = []
             list_unallocated_cells_ascending = {}
             for i in range(len(cost_matrix)):
                 for j in range(len(cost_matrix[0])):
                     if [i, j] not in allocated_cells:
                         list_unallocated_cells_ascending.update({f"{i} {j}" : cost_matrix[i][j]})
             sorted_dict = dict(sorted(list_unallocated_cells_ascending.items(), key=lambda item: item[1]))
-            recent_cost = calculate_final_cost(sup_dem_matrix, cost_matrix)
-            for key in sorted_dict.keys():
-                current_cell = [int(key.split()[0]), int(key.split()[1])]
-                ver, hor = find_vertical_and_horizontal_match_cell(current_cell, allocated_cells)
-                for v_i in ver:
-                    for h_i in hor:
-                        new_path = find_path(allocated_cells, v_i, h_i)
-                        if new_path:
-                            new_path.insert(0, current_cell)
-                            print(new_path)
-                            new_matrix = matrix_transform_copy(sup_dem_matrix,new_path)
-                            new_cost = calculate_final_cost(new_matrix, cost_matrix)
-                            if new_cost < recent_cost:
-                                sup_dem_matrix = copy.deepcopy(new_matrix) 
-                                print(new_cost)
-                                recent_cost = new_cost
-            break               
+            first_key = next(iter(sorted_dict))
+            new_cell = [int(first_key.split()[0]), int(first_key.split()[1])]
+            allocated_cells.insert(0, new_cell)
+            u,v = calculate_u_and_v(cost_matrix,allocated_cells)
+            penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
+            print(allocated_cells)
+            for _ in penalty_matrix:
+                print(_)
+            print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
+            ver,hor = find_vertical_and_horizontal_match_cell(max_pos_cell,allocated_cells)
+            path = []
+            min_path_len = len(allocated_cells)
+            for start in ver:
+                for end in hor:
+                    p = find_path(allocated_cells, start, end)
+                    if len(p) < min_path_len:
+                        path = p
+                        min_path_len = len(p)
+            path.insert(0,max_pos_cell)        
+            print(path)
+            matrix_transform(sup_dem_matrix, path)
+            for _ in sup_dem_matrix:
+                print(_)
+            print(calculate_final_cost(sup_dem_matrix,cost_matrix))
+            return          
         u,v = calculate_u_and_v(cost_matrix,allocated_cells)
         penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
         for _ in penalty_matrix:

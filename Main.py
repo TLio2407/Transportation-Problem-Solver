@@ -20,5 +20,5 @@ nwc_matrix = nwc.NWC(demand_arr, supply_arr, cost_matrix)
 lcc_matrix = lcc.LCC(demand_arr, supply_arr, cost_matrix)
 for _ in lcc_matrix:
     print(_)
-opt.optimize(lcc_matrix,cost_matrix)
+opt.optimize(nwc_matrix,cost_matrix)
 
