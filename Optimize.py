@@ -113,7 +113,6 @@ def find_vertical_and_horizontal_match_cell(target_cell = [], allocated_cells = 
 def optimize(sup_dem_matrix = [], cost_matrix = []):
     allocated_cells = get_allocated_cells(sup_dem_matrix)
     if is_Degeneracy(cost_matrix, allocated_cells):
-        new_matrix = []
         list_unallocated_cells_ascending = {}
         for i in range(len(cost_matrix)):
             for j in range(len(cost_matrix[0])):
@@ -129,6 +128,8 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
         for _ in penalty_matrix:
             print(_)
         print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
+        if not max_pos_cell:
+            return sup_dem_matrix
         ver,hor = find_vertical_and_horizontal_match_cell(max_pos_cell,allocated_cells)
         path = []
         min_path_len = len(allocated_cells)
@@ -140,11 +141,10 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
                     min_path_len = len(p)
         path.insert(0,max_pos_cell)        
         print(path)
-        matrix_transform(sup_dem_matrix, path)
         for _ in sup_dem_matrix:
             print(_)
         print(calculate_final_cost(sup_dem_matrix,cost_matrix))
-        return
+        return sup_dem_matrix
     u,v = calculate_u_and_v(cost_matrix,allocated_cells)
     penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
     for _ in penalty_matrix:
@@ -168,7 +168,6 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
             print(_)
         allocated_cells = get_allocated_cells(sup_dem_matrix)
         if is_Degeneracy(cost_matrix, allocated_cells):
-            new_matrix = []
             list_unallocated_cells_ascending = {}
             for i in range(len(cost_matrix)):
                 for j in range(len(cost_matrix[0])):
@@ -184,6 +183,8 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
             for _ in penalty_matrix:
                 print(_)
             print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
+            if not max_pos_cell:
+                return sup_dem_matrix
             ver,hor = find_vertical_and_horizontal_match_cell(max_pos_cell,allocated_cells)
             path = []
             min_path_len = len(allocated_cells)
@@ -199,13 +200,10 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
             for _ in sup_dem_matrix:
                 print(_)
             print(calculate_final_cost(sup_dem_matrix,cost_matrix))
-            return          
+            return sup_dem_matrix   
         u,v = calculate_u_and_v(cost_matrix,allocated_cells)
         penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
         for _ in penalty_matrix:
             print(_)
         print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
-    print("RESULT MATRIX")
-    for _ in sup_dem_matrix:
-        print(_)
-    print(f"FINAL COST: {calculate_final_cost(sup_dem_matrix,cost_matrix)}")
+    return sup_dem_matrix
