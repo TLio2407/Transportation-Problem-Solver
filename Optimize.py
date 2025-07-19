@@ -111,6 +111,32 @@ def find_vertical_and_horizontal_match_cell(target_cell = [], allocated_cells = 
 
 def optimize(sup_dem_matrix = [], cost_matrix = []):
     allocated_cells = get_allocated_cells(sup_dem_matrix)
+    if is_Degeneracy(cost_matrix, allocated_cells):
+        new_matrix = []
+        list_unallocated_cells_ascending = {}
+        for i in range(len(cost_matrix)):
+            for j in range(len(cost_matrix[0])):
+                if [i, j] not in allocated_cells:
+                    list_unallocated_cells_ascending.update({f"{i} {j}" : cost_matrix[i][j]})
+        sorted_dict = dict(sorted(list_unallocated_cells_ascending.items(), key=lambda item: item[1]))
+        recent_cost = calculate_final_cost(sup_dem_matrix, cost_matrix)
+        print(f"Recent Cost:{recent_cost}")
+        for key in sorted_dict.keys():
+            current_cell = [int(key.split()[0]), int(key.split()[1])]
+            ver, hor = find_vertical_and_horizontal_match_cell(current_cell, allocated_cells)
+            for v_i in ver:
+                for h_i in hor:
+                    new_path = find_path(allocated_cells, v_i, h_i)
+                    if new_path:
+                        new_path.insert(0, current_cell)
+                        print(new_path)
+                        new_matrix = matrix_transform_copy(sup_dem_matrix,new_path)
+                        new_cost = calculate_final_cost(new_matrix, cost_matrix)
+                        if new_cost < recent_cost:
+                            sup_dem_matrix = copy.deepcopy(new_matrix) 
+                            print(new_cost)
+                            recent_cost = new_cost
+        return sup_dem_matrix
     u,v = calculate_u_and_v(cost_matrix,allocated_cells)
     penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
     for _ in penalty_matrix:
@@ -138,25 +164,25 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
             for i in range(len(cost_matrix)):
                 for j in range(len(cost_matrix[0])):
                     if [i, j] not in allocated_cells:
-                        list_unallocated_cells_ascending.update({cost_matrix[i][j]:[i,j]})
-            sorted_dict = dict(sorted(list_unallocated_cells_ascending.items()))
+                        list_unallocated_cells_ascending.update({f"{i} {j}" : cost_matrix[i][j]})
+            sorted_dict = dict(sorted(list_unallocated_cells_ascending.items(), key=lambda item: item[1]))
             recent_cost = calculate_final_cost(sup_dem_matrix, cost_matrix)
             for key in sorted_dict.keys():
-                ver, hor = find_vertical_and_horizontal_match_cell(sorted_dict[key], allocated_cells)
+                current_cell = [int(key.split()[0]), int(key.split()[1])]
+                ver, hor = find_vertical_and_horizontal_match_cell(current_cell, allocated_cells)
                 for v_i in ver:
                     for h_i in hor:
                         new_path = find_path(allocated_cells, v_i, h_i)
                         if new_path:
-                            new_path.insert(0, sorted_dict[key])
+                            new_path.insert(0, current_cell)
                             print(new_path)
                             new_matrix = matrix_transform_copy(sup_dem_matrix,new_path)
                             new_cost = calculate_final_cost(new_matrix, cost_matrix)
                             if new_cost < recent_cost:
                                 sup_dem_matrix = copy.deepcopy(new_matrix) 
                                 print(new_cost)
-            done = True 
-        if done:
-            break                
+                                recent_cost = new_cost
+            break               
         u,v = calculate_u_and_v(cost_matrix,allocated_cells)
         penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
         for _ in penalty_matrix:
