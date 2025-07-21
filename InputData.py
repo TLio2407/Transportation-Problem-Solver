@@ -37,15 +37,12 @@ def inputCostmatrix(demand_number,supply_number):
     return cost_matrix
 #Format arrays of Demands and Supplies into matrix 
 def formatData(demand_arr, supply_arr, cost_matrix):
-    sum_demand = 0
-    sum_supply = 0
-    for i in demand_arr:
-        sum_demand += i
-    for i in supply_arr:
-        sum_supply += i
+    sum_demand = sum(demand_arr)
+    sum_supply = sum(supply_arr)
     if sum_supply > sum_demand:
         demand_arr.append(sum_supply - sum_demand)
-        print(f"Added dummy demand of {sum_supply - sum_demand} to balance supply and demand.")
+        print()
+        print(f"==>Added dummy demand of {sum_supply - sum_demand} to balance supply and demand<==")
         for i in cost_matrix:
             i.append(0)
     formated_matrix = []
@@ -63,12 +60,14 @@ def formatData(demand_arr, supply_arr, cost_matrix):
     return formated_matrix    
 
 def printData(demand_arr, supply_arr ,cost_matrix):
-    choice = str(input("Print input data?[Y/N]:"))
+    choice = str(input("Print input data?[Y/N]: "))
     if choice.upper() == "Y":
         formated = formatData(demand_arr, supply_arr,cost_matrix)
+        print()
         formated[0].insert(0,"S|D")
         for i in formated:
             print(i)
         print("Costs: ")
         for i in cost_matrix:
             print(i)
+            
