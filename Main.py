@@ -11,6 +11,7 @@ print("1. Input from Excel")
 print("2. Input manually/ from keyboard")
 choose = int(input("1 or 2: "))
 if choose == 1:
+    print("Note: Use given input.xlsx as sample form of input")
     file_path = str(input("Input file path: "))
     
     # Check if file exists right after input
