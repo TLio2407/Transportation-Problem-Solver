@@ -56,16 +56,16 @@ This project provides a complete implementation of the **Transportation Problem*
 
 ---
 
-## 📂 Requirements
+## Requirements
 
 - Python 3.7+
 - `openpyxl` (for Excel file reading)
 
 
-## 🛠️ Author
+## Author
 
-Developed by PhanDinhCuong
-Contact at phandinhcuong02@gmail.com
-Feel free to contribute, suggest improvements, or raise issues!
+- Developed by PhanDinhCuong
+- Contact at phandinhcuong02@gmail.com
+- Feel free to contribute, suggest improvements, or raise issues!
 
 ---
