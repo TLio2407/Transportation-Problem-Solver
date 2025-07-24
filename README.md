@@ -1,6 +1,6 @@
 # Transportation Problem Solver by PDC
 
-This project provides a complete implementation of the **Transportation Problem** using Python. It includes tools for reading input data manually or from Excel, generating an initial feasible solution using the **North-West Corner Rule**, optimizing the solution, and visualizing the optimization path.
+This project provides a complete implementation of the **Transportation Problem** using Python. It includes tools for reading input data manually or from Excel, generating an initial feasible solution using the **North-West Corner Rule**, optimizing the solution, dealing with degeneracy and visualizing the optimization path.
 
 ---
 
@@ -41,11 +41,12 @@ This project provides a complete implementation of the **Transportation Problem*
 
 ## Features
 
-- ✅ Manual and Excel-based data input
-- ✅ North-West Corner Rule for initial feasible solution
-- ✅ Path-based optimization method
-- ✅ Modular, extensible code structure
-
+- Manual and Excel-based data input
+- North-West Corner Rule for initial feasible solution
+- Path-based optimization method
+- Modular, extensible code structure
+- Degeneracy treated as last step to generate result
+- Comparison between intial cost from NWC matrix and final cost calculated from result matrix
 ---
 
 ## Algorithms Used

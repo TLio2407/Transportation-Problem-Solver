@@ -49,7 +49,7 @@ def try_solve_u_v(cost_matrix, allocated_cells, m, n, max_iterations=100):
     
     return u, v, success
 
-def calculate_u_v_degeneracy(cost_matrix, allocated_cells, cell_dict):
+def calculate_u_v_degeneracy(cost_matrix, allocated_cells, sorted_dict):
     """
     Calculate u and v values for degeneracy resolution in transportation problem.
     """
@@ -61,10 +61,7 @@ def calculate_u_v_degeneracy(cost_matrix, allocated_cells, cell_dict):
     new_allocated_cells = allocated_cells.copy()
     
     # Try different cells from cell_dict until we can solve for u and v
-    if cell_dict:
-        # Sort the dictionary by cost values (ascending)
-        sorted_dict = dict(sorted(cell_dict.items(), key=lambda item: item[1]))
-        
+    if sorted_dict:
         for key in sorted_dict.keys():
             # Try adding this cell
             test_cell = [int(key.split()[0]), int(key.split()[1])]
@@ -87,67 +84,3 @@ def calculate_u_v_degeneracy(cost_matrix, allocated_cells, cell_dict):
     u, v, _ = try_solve_u_v(cost_matrix, new_allocated_cells, m, n)
     
     return u, v, new_allocated_cells
-
-# Test the specific user case
-def test_user_case():
-    cost_matrix = [
-        [14, 2, 5, 7],
-        [5, 6, 21, 3],
-        [24, 1, 10, 3],
-        [7, 4, 9, 8]
-    ]
-    
-    allocated_cells = [[0, 2], [1, 0], [1, 1], [2, 3], [3, 1], [3, 3]]
-    
-    cell_dict = {
-        '2 1': 1, '0 1': 2, '1 3': 3, '0 3': 7, '3 0': 7, 
-        '3 2': 9, '2 2': 10, '0 0': 14, '1 2': 21, '2 0': 24
-    }
-    
-    print("--- Testing User's Specific Case ---")
-    print("Cost matrix:")
-    for i, row in enumerate(cost_matrix):
-        print(f"Row {i}: {row}")
-    
-    print(f"\nOriginal allocated cells: {allocated_cells}")
-    print(f"Number of allocated cells: {len(allocated_cells)}")
-    print(f"Expected for non-degenerate: {len(cost_matrix) + len(cost_matrix[0]) - 1}")
-    
-    # Check current solution
-    u_test, v_test, success = try_solve_u_v(cost_matrix, allocated_cells, 4, 4)
-    print(f"\nCan solve u,v with current cells? {success}")
-    
-    if not success:
-        print("Degeneracy detected! Testing each cell from dictionary...")
-        
-        sorted_dict = dict(sorted(cell_dict.items(), key=lambda item: item[1]))
-        for key, cost in sorted_dict.items():
-            test_cell = [int(key.split()[0]), int(key.split()[1])]
-            test_cells = allocated_cells + [test_cell]
-            u, v, test_success = try_solve_u_v(cost_matrix, test_cells, 4, 4)
-            
-            print(f"  Testing cell {test_cell} (cost {cost}): {'SUCCESS' if test_success else 'FAILED'}")
-            if test_success:
-                print(f"    U values: {u}")
-                print(f"    V values: {v}")
-                break
-    
-    # Run the full function
-    print(f"\n--- Running calculate_u_v_degeneracy ---")
-    u_vals, v_vals, new_cells = calculate_u_v_degeneracy(cost_matrix, allocated_cells, cell_dict)
-    
-    print(f"Final allocated cells: {new_cells}")
-    print(f"Added cell: {[cell for cell in new_cells if cell not in allocated_cells]}")
-    print(f"U values: {u_vals}")
-    print(f"V values: {v_vals}")
-    
-    # Verify
-    print(f"\nVerification:")
-    for cell in new_cells:
-        i, j = cell[0], cell[1]
-        calculated = u_vals[i] + v_vals[j]
-        actual = cost_matrix[i][j]
-        print(f"Cell ({i},{j}): {u_vals[i]} + {v_vals[j]} = {calculated}, cost = {actual}")
-
-# Run the test
-# test_user_case()

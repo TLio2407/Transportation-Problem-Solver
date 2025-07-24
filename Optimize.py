@@ -196,7 +196,6 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
             matrix_transform(sup_dem_matrix, path)
             for _ in sup_dem_matrix:
                 print(_)
-            print(calculate_final_cost(sup_dem_matrix,cost_matrix))
             return sup_dem_matrix   
         u,v = calculate_u_and_v(cost_matrix,allocated_cells)
         penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
