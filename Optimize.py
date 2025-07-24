@@ -120,10 +120,10 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
         sorted_dict = dict(sorted(list_unallocated_cells_ascending.items(), key=lambda item: item[1]))     
         u, v, allocated_cells = calculate_u_v_degeneracy(cost_matrix,allocated_cells,sorted_dict)
         penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
-        print(allocated_cells)
-        for _ in penalty_matrix:
-            print(_)
-        print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
+        # print(allocated_cells)
+        # for _ in penalty_matrix:
+        #     print(_)
+        # print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
         if not max_pos_cell:
             return sup_dem_matrix
         ver,hor = find_vertical_and_horizontal_match_cell(max_pos_cell,allocated_cells)
@@ -136,16 +136,16 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
                     path = p
                     min_path_len = len(p)
         path.insert(0,max_pos_cell)        
-        print(path)
-        for _ in sup_dem_matrix:
-            print(_)
-        print(calculate_final_cost(sup_dem_matrix,cost_matrix))
+        # print(path)
+        # for _ in sup_dem_matrix:
+        #     print(_)
+        # print(calculate_final_cost(sup_dem_matrix,cost_matrix))
         return sup_dem_matrix
     u,v = calculate_u_and_v(cost_matrix,allocated_cells)
     penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
-    for _ in penalty_matrix:
-        print(_)
-    print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
+    # for _ in penalty_matrix:
+    #     print(_)
+    # print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
     done = False            
     
     while maximum_positive > 0 or done:
@@ -159,12 +159,12 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
                     path = p
                     min_path_len = len(p)
         path.insert(0,max_pos_cell)        
-        print(path)
+        # print(path)
         matrix_transform(sup_dem_matrix, path)
-        for _ in sup_dem_matrix:
-            print(_)
+        # for _ in sup_dem_matrix:
+            # print(_)
         allocated_cells = get_allocated_cells(sup_dem_matrix)
-        print(allocated_cells, len(allocated_cells))
+        # print(allocated_cells, len(allocated_cells))
         if is_Degeneracy(cost_matrix, allocated_cells):
             print("Yes")
             list_unallocated_cells_ascending = {}
@@ -174,11 +174,11 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
                         list_unallocated_cells_ascending.update({f"{i} {j}" : cost_matrix[i][j]})
             sorted_dict = dict(sorted(list_unallocated_cells_ascending.items(), key=lambda item: item[1]))
             u, v, allocated_cells = calculate_u_v_degeneracy(cost_matrix,allocated_cells,sorted_dict)
-            print(allocated_cells)
+            # print(allocated_cells)
             penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
-            print(allocated_cells)
-            for _ in penalty_matrix:
-                print(_)
+            # print(allocated_cells)
+            # for _ in penalty_matrix:
+                # print(_)
             print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
             if not max_pos_cell:
                 return sup_dem_matrix
@@ -192,15 +192,15 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
                         path = p
                         min_path_len = len(p)
             path.insert(0,max_pos_cell)        
-            print(path)
+            # print(path)
             matrix_transform(sup_dem_matrix, path)
-            for _ in sup_dem_matrix:
-                print(_)
+            # for _ in sup_dem_matrix:
+            #     print(_)
             return sup_dem_matrix   
         u,v = calculate_u_and_v(cost_matrix,allocated_cells)
         penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
-        for _ in penalty_matrix:
-            print(_)
-        print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
-        print("Here")
+        # for _ in penalty_matrix:
+        #     print(_)
+        # print(f"Maximum value is {maximum_positive} at cell {max_pos_cell}")
+        # print("Here")
     return sup_dem_matrix
