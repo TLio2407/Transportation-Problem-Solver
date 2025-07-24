@@ -11,6 +11,7 @@ This project provides a complete implementation of the **Transportation Problem*
 ├── InputData.py          # Manually input demands, supplies, and costs
 ├── InputFromExcel.py     # Extracts data from Excel file (path input from keyboard)
 ├── NorthWestCorner.py    # Generates initial solution using North-West Corner method
+├── U_V_Degeneracy.py     # Calculating u & v for degeneracy matrix
 ├── Optimize.py           # Optimizes the transportation plan
 ├── PathFinder.py         # Builds an optimization path from the current plan
 ├── main.py               # Entry point of the program
