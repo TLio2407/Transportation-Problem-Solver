@@ -1,4 +1,5 @@
 from PathFinder import find_path
+from U_V_Degeneracy import calculate_u_v_degeneracy
 import copy
 def get_allocated_cells(matrix):
     allocated_cells = []
@@ -37,15 +38,13 @@ def calculate_u_and_v(cost_matrix, allocated_cells):
             elif u[i] == None and v[j] != None:
                 u.pop(i)
                 u.insert(i, cost_matrix[i][j] - v[j])
-            
-
-    print("U = ")
-    for i in u:
-        print(i)
-    print("V = ", v)
-
-    
+        # print("U = ")
+        # for i in u:
+        #     print(i)
+        # print("V = ", v)
     return u, v
+
+
 
 def calculate_final_cost(sup_dem_matrix = [], cost_matrix = []):
     cost = 0
@@ -118,13 +117,8 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
             for j in range(len(cost_matrix[0])):
                 if [i, j] not in allocated_cells:
                     list_unallocated_cells_ascending.update({f"{i} {j}" : cost_matrix[i][j]})
-        sorted_dict = dict(sorted(list_unallocated_cells_ascending.items(), key=lambda item: item[1]))
-        first_key = next(iter(sorted_dict))
-        new_cell = [int(first_key.split()[0]), int(first_key.split()[1])]
-        for cell in allocated_cells:
-            if cell[0] >= new_cell[0]:
-                allocated_cells.insert(allocated_cells.index(cell), new_cell)        
-        u,v = calculate_u_and_v(cost_matrix,allocated_cells)
+        sorted_dict = dict(sorted(list_unallocated_cells_ascending.items(), key=lambda item: item[1]))     
+        u, v, allocated_cells = calculate_u_v_degeneracy(cost_matrix,allocated_cells,sorted_dict)
         penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
         print(allocated_cells)
         for _ in penalty_matrix:
@@ -179,14 +173,8 @@ def optimize(sup_dem_matrix = [], cost_matrix = []):
                     if [i, j] not in allocated_cells:
                         list_unallocated_cells_ascending.update({f"{i} {j}" : cost_matrix[i][j]})
             sorted_dict = dict(sorted(list_unallocated_cells_ascending.items(), key=lambda item: item[1]))
-            first_key = next(iter(sorted_dict))
-            new_cell = [int(first_key.split()[0]), int(first_key.split()[1])]
-            for cell in allocated_cells:
-                if cell[0] >= new_cell[0]:
-                    allocated_cells.insert(allocated_cells.index(cell), new_cell) 
-                    break
+            u, v, allocated_cells = calculate_u_v_degeneracy(cost_matrix,allocated_cells,sorted_dict)
             print(allocated_cells)
-            u,v = calculate_u_and_v(cost_matrix,allocated_cells)
             penalty_matrix, maximum_positive, max_pos_cell = generate_penalty_matrix(cost_matrix, allocated_cells, u,v)
             print(allocated_cells)
             for _ in penalty_matrix:

@@ -40,9 +40,12 @@ data.printData(demand_arr, supply_arr, cost_matrix)
 nwc_matrix = nwc.NWC(demand_arr, supply_arr, cost_matrix)
 for _ in nwc_matrix:
     print(_)
+initial_cost = opt.calculate_final_cost(nwc_matrix, cost_matrix)
 result_matrix = opt.optimize(nwc_matrix,cost_matrix)
 print("FINAL MATRIX:")
 for _ in result_matrix:
     print(_)
-print(f"FINAL COST: {opt.calculate_final_cost(result_matrix,cost_matrix)}")
-
+final_cost = opt.calculate_final_cost(result_matrix,cost_matrix)
+print(f"Initial Cost: {initial_cost}")
+print(f"FINAL COST: {final_cost}")
+print(f"Decrease by {(initial_cost - final_cost)} => {((initial_cost - final_cost)/ initial_cost) * 100}% reduced")
