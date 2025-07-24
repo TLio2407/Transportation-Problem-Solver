@@ -38,6 +38,8 @@ if not isSolveable(supply_arr, demand_arr):
 data.printData(demand_arr, supply_arr, cost_matrix)
 
 nwc_matrix = nwc.NWC(demand_arr, supply_arr, cost_matrix)
+for _ in nwc_matrix:
+    print(_)
 result_matrix = opt.optimize(nwc_matrix,cost_matrix)
 print("FINAL MATRIX:")
 for _ in result_matrix:
