@@ -12,7 +12,7 @@ def addDatatoArray(string, number):
     while string.count(" ") + 1 != number:
         string = str(input("Incorrect input! Input again: "))
     for i in string.split(" "):
-        arr.append(int(i))
+        arr.append(float(i))
     return arr    
 
 def inputDemandandSupply(demand_number, supply_number):
