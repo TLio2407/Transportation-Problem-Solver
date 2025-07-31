@@ -16,11 +16,10 @@ This project provides a complete implementation of the **Transportation Problem*
 ├── Optimize.py            # Optimizes the transportation plan
 ├── PathFinder.py          # Builds an optimization path from the current plan
 ├── Terminal_Execute.py    # Terminal-based execution for input, optimization and output result
-├── Popup_Execute.py       # GUI-based execution using Tkinter
 ├── ConvertToExcel.py      # Converts result to Excel format
 ├── input.xlsx             # Sample input data (cost, supply, demand)
 ├── output.xlsx            # Output file with the result matrix
-├── main.py                # Entry point of the program (optional)
+├── tkinter_execute.py     # GUI-based execution using Tkinter
 ├── README.md              # Project documentation
 ```
 
@@ -38,7 +37,7 @@ This project provides a complete implementation of the **Transportation Problem*
 
    - **GUI (Popup)**:
      ```bash
-     python Popup_Execute.py
+     python tkinter_execute.py
      ```
    - **Terminal**:
      ```bash
@@ -47,7 +46,7 @@ This project provides a complete implementation of the **Transportation Problem*
 
 3. **Choose Input Mode:**
    - **Manual Input**: Uses logic from `InputData.py`
-   - **Excel Input**: Enter Excel file path when prompted (uses `InputFromExcel.py`)
+   - **Excel Input**(available now only in terminal mode): Enter Excel file path when prompted (uses `InputFromExcel.py`)
 
 ---
 
