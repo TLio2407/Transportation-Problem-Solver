@@ -16,8 +16,11 @@ def input(filepath = str()):
     demand_arr = [int(x) for x in demand_arr if pd.notna(x)]
     supply_arr = [int(x) for x in last_column if pd.notna(x)]
 
-    print("Demand_arr:", demand_arr)
-    print("Supply_arr:", supply_arr)
+    print("Demand Array:", demand_arr)
+    print()
+    print("Supply Array:", supply_arr)
+    print()
+    print("Cost Matrix:")
     for _ in cost_matrix:
         print(_)
     return demand_arr, supply_arr, cost_matrix
